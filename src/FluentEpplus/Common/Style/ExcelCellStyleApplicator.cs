@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace FluentEpplus.Common.Style
 {
@@ -35,7 +36,7 @@ namespace FluentEpplus.Common.Style
 
             if (style.BackgroundColor != Color.Empty)
             {
-                //cells.Style.Fill.PatternColor = ExcelFillStyle.Solid;
+                cells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 cells.Style.Fill.BackgroundColor.SetColor(style.BackgroundColor);
             }
         }

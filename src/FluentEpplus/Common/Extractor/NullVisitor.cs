@@ -89,7 +89,7 @@ namespace FluentEpplus.Common.Extractor
             {
                 if (_constructor == null)
                 {
-                    _constructor = typeof(SafeGetter<T>).GetConstructor(new[] { typeof(T), typeof(string), typeof(bool) });
+                    _constructor = typeof(SafeGetter<T>).GetConstructor(new[] { typeof(T), typeof(bool) });
                 }
 
                 return _constructor;
@@ -98,7 +98,6 @@ namespace FluentEpplus.Common.Extractor
 
         private Expression BuildIfs(Expression current, Expression prev = null)
         {
-            var stringRepresentation = Expression.Constant(current.ToString(), typeof(string));
 
             var variable = Expression.Parameter(current.Type, NextVarName);
 
@@ -111,13 +110,13 @@ namespace FluentEpplus.Common.Extractor
             var nextExpression =
                  !end
                     ? BuildIfs(_expressions.Pop(), variable)
-                    : LastExpression(variable, stringRepresentation);
+                    : LastExpression(variable);
 
             Expression blockBody;
 
             if (!end)
             {
-                var whenNull = OnNull(stringRepresentation);
+                var whenNull = OnNull();
 
                 blockBody = CheckForNull(variable, whenNull, nextExpression);
             }
@@ -129,13 +128,13 @@ namespace FluentEpplus.Common.Extractor
             return Expression.Block(new[] { variable }, new[] { assignment, blockBody });
         }
 
-        private Expression OnNull(ConstantExpression stringRepresentation)
+        private Expression OnNull()
         {
             var falseVal = Expression.Constant(false);
 
             var nullValue = Expression.Constant(default(T), _finalExpression.Type);
 
-            return Expression.New(MethodValueConstructor, new Expression[] { nullValue, stringRepresentation, falseVal });
+            return Expression.New(MethodValueConstructor, new Expression[] { nullValue, falseVal });
         }
 
         private Expression CheckForNull(ParameterExpression variable, Expression whenNull, Expression nextExpression)
@@ -159,11 +158,11 @@ namespace FluentEpplus.Common.Extractor
             return Expression.Condition(ifNull, whenNull, nextExpression);
         }
 
-        private Expression LastExpression(ParameterExpression variable, ConstantExpression stringRepresentation)
+        private Expression LastExpression(ParameterExpression variable)
         {
             var trueVal = Expression.Constant(true);
 
-            return Expression.New(MethodValueConstructor, new Expression[] { variable, stringRepresentation, trueVal });
+            return Expression.New(MethodValueConstructor, new Expression[] { variable, trueVal });
         }
 
         private Expression EvaluateExpression(Expression current, Expression prev)
