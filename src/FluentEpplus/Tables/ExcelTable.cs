@@ -10,12 +10,8 @@ namespace FluentEpplus.Tables
     public interface IExcelTableMappingFluent<TDto> : IExcelGroupCellMappingFluent<TDto>
     {
         IExcelTableMappingFluent<TDto> MapTable(Action<IExcelTableMappingFluent<TDto>> relationship);
-
-        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression,
-            Action<IExcelTableMappingFluent<TNewDto>> relationship);
-
-        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression,
-            Action<IExcelTableMappingFluent<TNewDto>> relationship);
+        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
+        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
     }
 
     public interface IExcelTableConfigurationMappingFluent<TDto> : IExcelComplexGroupCellConfigurationMappingFluent {}

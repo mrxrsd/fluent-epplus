@@ -22,6 +22,7 @@ namespace FluentEpplus.Tables.Processor
         private int ProcessHeaderWithCurrentRow(ExcelWorksheet worksheet, int row, int currentRow, IExcelContainerCells container)
         {
             var incrementRow = 1;
+
             var groupCells = container.Cells.OfType<IExcelContainerCells>();
             var maxCurrentRow = 0;
 
@@ -55,10 +56,7 @@ namespace FluentEpplus.Tables.Processor
 
                 if (groupCell == null || cell is IExcelComplexGroupCell)
                 {
-                    var columnOrder = cell is IExcelComplexGroupCell
-                        ? ((IExcelComplexGroupCell) cell).GetMaxOrder()
-                        : cell.ColumnOrder;
-
+                    var columnOrder = cell is IExcelComplexGroupCell ? ((IExcelComplexGroupCell) cell).GetMaxOrder() : cell.ColumnOrder;
                     worksheet.Cells[row, cell.ColumnOrder, currentRow, columnOrder].Value = cell.Caption;
                     cell.ApplyHeaderStyle(worksheet.Cells[row, cell.ColumnOrder, currentRow, columnOrder]);
 
@@ -74,8 +72,8 @@ namespace FluentEpplus.Tables.Processor
                             worksheet.Column(cell.ColumnOrder).AutoFit();
                     }
 
-                    worksheet.Cells[row, cell.ColumnOrder, row, columnOrder].Style.Font.Bold = true;
-                    worksheet.Cells[row, cell.ColumnOrder, row, columnOrder].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[row, cell.ColumnOrder, currentRow, columnOrder].Style.Font.Bold = true;
+                    worksheet.Cells[row, cell.ColumnOrder, currentRow, columnOrder].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
 
             }
@@ -124,7 +122,7 @@ namespace FluentEpplus.Tables.Processor
                 var newData = cell.GetValue(data);
                 if (newData is Enumerable)
                 {
-                    maxCurrentRow = ProcessRowFromEnumerable(worksheet, lastHeaderRow, cell, (IEnumerable) newData) - 1;
+                    maxCurrentRow = ProcessRowFromEnumerable(worksheet, lastHeaderRow, cell, (IEnumerable)newData) - 1;
                 }
                 else
                 {
@@ -141,12 +139,9 @@ namespace FluentEpplus.Tables.Processor
                 if (groupComplexCells == null && cell is IExcelGroupCell)
                 {
                     if (data is IEnumerable)
-                        ProcessRowFromEnumerableWithCurrentRow(worksheet, row, currentRow, (IExcelGroupCell) cell,
-                            (IEnumerable) cell.GetValue(data));
+                        ProcessRowFromEnumerableWithCurrentRow(worksheet, row, currentRow, (IExcelGroupCell) cell, (IEnumerable) cell.GetValue(data));
                     else
-                        ProcessRowWithCurrentRow(worksheet, row, currentRow, (IExcelGroupCell) cell,
-                            cell.GetValue(data));
-                    
+                        ProcessRowWithCurrentRow(worksheet, row, currentRow, (IExcelGroupCell) cell, cell.GetValue(data));
                     continue;
                 }
 

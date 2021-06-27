@@ -17,9 +17,7 @@ namespace FluentEpplus.Common.Processor
 
         public void Process(ExcelWorksheet worksheet, IExcelContainerCells container, object data)
         {
-            var startRow = Header.ProcessHeader(worksheet, container.StartAt.HasValue ? container.StartAt.Value : 1,
-                container) + 1;
-
+            var startRow = Header.ProcessHeader(worksheet, container.StartAt.HasValue ? container.StartAt.Value : 1, container) + 1;
             var enumerableData = (data as IEnumerable);
             if (enumerableData != null)
             {

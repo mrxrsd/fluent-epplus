@@ -31,7 +31,7 @@ namespace FluentEpplus.Tables.Processor
                 worksheet.Cells[row + incrementRow, cell.ColumnOrder].Value = cell.Caption;
                 worksheet.Cells[row + incrementRow, cell.ColumnOrder].Style.Font.Bold = true;
                 worksheet.Cells[row + incrementRow, cell.ColumnOrder].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                cell.ApplyHeaderStyle(worksheet.Cells[row+incrementRow, cell.ColumnOrder]);
+                cell.ApplyHeaderStyle(worksheet.Cells[row + incrementRow, cell.ColumnOrder]);
             }
 
             return row++ + incrementRow;

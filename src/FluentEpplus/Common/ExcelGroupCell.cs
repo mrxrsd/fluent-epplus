@@ -9,21 +9,16 @@ namespace FluentEpplus.Common
 {
     public interface IExcelGroupCellMappingFluent<TDto> : IExcelSingleCellMappingFluent<TDto>
     {
-        IExcelGroupCellConfigurationMappingFluent<TDto> MapGroup(
-            Action<IExcelGroupCellConfigurationMappingFluent<TDto>> relationship);
-
-        IExcelGroupCellConfigurationMappingFluent<TNewDto> MapGroup<TNewDto>(
-            Expression<Func<TDto, TNewDto>> propertyExpression,
-            Action<IExcelGroupCellMappingFluent<TNewDto>> relationship);
+        IExcelGroupCellConfigurationMappingFluent<TDto> MapGroup(Action<IExcelGroupCellMappingFluent<TDto>> relationship);
+        IExcelGroupCellConfigurationMappingFluent<TNewDto> MapGroup<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelGroupCellMappingFluent<TNewDto>> relationship);
     }
 
     public interface IExcelGroupCellConfigurationMappingFluent<TDto> : IExcelGroupCellConfigurationMappingFluent
     {
-
+        
     }
 
-    public interface IExcelGroupCell<TDto> : IExcelGroupCell, IExcelGroupCellConfigurationMappingFluent<TDto>,
-        IExcelGroupCellMappingFluent<TDto>
+    public interface IExcelGroupCell<TDto> : IExcelGroupCell, IExcelGroupCellConfigurationMappingFluent<TDto>, IExcelGroupCellMappingFluent<TDto>
     {
         void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, TDto>> propertyExpression);
         void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, List<TDto>>> propertyExpression);
@@ -45,6 +40,16 @@ namespace FluentEpplus.Common
             Cells = new List<IExcelCell>();
             ShowCaption = true;
             Extractor = new DataExtractor<TDto, TDto>(data => data);
+        }
+
+        public void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, TDto>> propertyExpression)
+        {
+            Extractor = new DataExtractor<TParentDto, TDto>(propertyExpression);
+        }
+
+        public void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, List<TDto>>> propertyExpression)
+        {
+            Extractor = new DataExtractor<TParentDto, List<TDto>>(propertyExpression);
         }
 
 
@@ -82,16 +87,14 @@ namespace FluentEpplus.Common
             return this;
         }
 
-        public override IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(Expression<Func<TDto, TValue>> propertyExpression,
-            Expression<Func<TValue, object>> formatExpression = null)
+        public override IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null)
         {
             var newCell = new ExcelSingleCell<TDto>(this);
             Cells.Add(newCell);
-
             return newCell.MapProperty(propertyExpression, formatExpression);
         }
 
-        public IExcelGroupCellConfigurationMappingFluent<TDto> MapGroup(Action<IExcelGroupCellConfigurationMappingFluent<TDto>> relationship)
+        public IExcelGroupCellConfigurationMappingFluent<TDto> MapGroup(Action<IExcelGroupCellMappingFluent<TDto>> relationship)
         {
             var newGroupProperty = new ExcelGroupCell<TDto>(this);
             relationship(newGroupProperty);
@@ -110,15 +113,7 @@ namespace FluentEpplus.Common
             return newGroupProperty;
         }
 
-        public void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, TDto>> propertyExpression)
-        {
-            Extractor = new DataExtractor<TParentDto, TDto>(propertyExpression);
-        }
 
-        public void BuildDataExtractor<TParentDto>(Expression<Func<TParentDto, List<TDto>>> propertyExpression)
-        {
-            Extractor = new DataExtractor<TParentDto, List<TDto>>(propertyExpression);
-        }
     }
     
     

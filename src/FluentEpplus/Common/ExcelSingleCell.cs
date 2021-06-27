@@ -10,10 +10,7 @@ namespace FluentEpplus.Common
 {
     public interface IExcelSingleCellMappingFluent<TDto>
     {
-        IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(
-            Expression<Func<TDto, TValue>> propertyExpression,
-            Expression<Func<TValue, object>> formatExpression = null);
-
+        IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null);
     }
 
     public interface IExcelSingleCellConfigurationMappingFluent<Dto> : IExcelCellConfigurationMappingFluent
@@ -27,12 +24,9 @@ namespace FluentEpplus.Common
         new IExcelSingleCellConfigurationMappingFluent<Dto> WordWrap();
     }
 
-    public interface IExcelSingleCell<TDto> : IExcelCell, IExcelSingleCellMappingFluent<TDto>,
-        IExcelSingleCellConfigurationMappingFluent<TDto>
+    public interface IExcelSingleCell<TDto> : IExcelCell, IExcelSingleCellMappingFluent<TDto>, IExcelSingleCellConfigurationMappingFluent<TDto>
     {
-        void BuildDataExtractor<TValue>(Expression<Func<TDto, TValue>> propertyExpression,
-            Expression<Func<TValue, object>> formatExpression = null);
-
+        void BuildDataExtractor<TValue>(Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null);
     }
 
 
@@ -62,8 +56,7 @@ namespace FluentEpplus.Common
             }
         }
 
-        public virtual void BuildDataExtractor<TValue>(Expression<Func<TDto, TValue>> propertyExpression,
-            Expression<Func<TValue, object>> formatExpression = null)
+        public virtual void BuildDataExtractor<TValue>(Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null)
         {
             Extractor = new DataExtractor<TDto, TValue>(propertyExpression);
             if (formatExpression != null)
@@ -73,44 +66,6 @@ namespace FluentEpplus.Common
         public object GetValue(object data)
         {
             return Extractor.GetValue(data);
-        }
-
-        public void ApplyStyle(ExcelRange cells, object data)
-        {
-            ValueStyleApplicator?.Apply(cells, ValueStyleApplicator, data);
-        }
-
-        public void ApplyHeaderStyle(ExcelRange cells)
-        {
-            HeaderStyleApplicator?.Apply(cells, HeaderStyleApplicator);
-        }
-
-
-        public IExcelSingleCellConfigurationMappingFluent<TDto> SetHeaderStyle(Action<IExcelCellStyle> configuration)
-        {
-            HeaderStyleApplicator = new ExcelCellStyleApplicator<TDto>();
-            configuration.Invoke(HeaderStyleApplicator);
-            return this;
-        }
-
-        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.AutoFit()
-        {
-            return (IExcelSingleCellConfigurationMappingFluent<TDto>) AutoFit();
-        }
-
-        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.WordWrap()
-        {
-            return (IExcelSingleCellConfigurationMappingFluent<TDto>) WordWrap();
-        }
-
-        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.SetOrder(int columnOrder)
-        {
-            return (IExcelSingleCellConfigurationMappingFluent<TDto>)SetOrder(columnOrder);
-        }
-
-        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.SetCaption(string caption)
-        {
-            return (IExcelSingleCellConfigurationMappingFluent<TDto>)SetCaption(caption);
         }
 
         public IExcelCellConfigurationMappingFluent SetOrder(int columnOrder)
@@ -127,26 +82,19 @@ namespace FluentEpplus.Common
 
         public IExcelSingleCellConfigurationMappingFluent<TDto> SetStyle(Action<IExcelCellStyle> configuration)
         {
-            throw new NotImplementedException();
+            ValueStyleApplicator = new ExcelCellStyleApplicator<TDto>();
+            configuration.Invoke(ValueStyleApplicator);
+            return this;
         }
 
         public IExcelSingleCellConfigurationMappingFluent<TDto> SetStyle(Action<IExcelCellStyle, TDto> configuration)
         {
-            throw new NotImplementedException();
+            ValueStyleApplicator = new ExcelCellStyleApplicator<TDto>();
+            ValueStyleApplicator.AttachConfiguration(configuration);
+            return this;
         }
 
-        IExcelCellConfigurationMappingFluent IExcelCellConfigurationMappingFluent.SetStyle(Action<IExcelCellStyle> configuration)
-        {
-            return SetStyle(configuration);
-        }
-
-        IExcelCellConfigurationMappingFluent IExcelCellConfigurationMappingFluent.SetHeaderStyle(Action<IExcelCellStyle> configuration)
-        {
-            return SetHeaderStyle(configuration);
-        }
-
-        public virtual IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(
-            Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null)
+        public virtual IExcelSingleCellConfigurationMappingFluent<TDto> MapProperty<TValue>(Expression<Func<TDto, TValue>> propertyExpression, Expression<Func<TValue, object>> formatExpression = null)
         {
             BuildDataExtractor(propertyExpression, formatExpression);
             return this;
@@ -171,10 +119,66 @@ namespace FluentEpplus.Common
             return this;
         }
 
+        IExcelCellConfigurationMappingFluent IExcelCellConfigurationMappingFluent.SetStyle(Action<IExcelCellStyle> configuration)
+        {
+            ValueStyleApplicator = new ExcelCellStyleApplicator<TDto>();
+            configuration.Invoke(ValueStyleApplicator);
+            return this;
+        }
+
+        public void ApplyStyle(ExcelRange cells, object data)
+        {
+            ValueStyleApplicator?.Apply(cells, ValueStyleApplicator, data);
+        }
+
+
         public IExcelCellConfigurationMappingFluent WordWrap()
         {
             IsWordWrap = true;
             return this;
         }
+
+
+
+        public void ApplyHeaderStyle(ExcelRange cells)
+        {
+            HeaderStyleApplicator?.Apply(cells, HeaderStyleApplicator);
+        }
+
+        public IExcelSingleCellConfigurationMappingFluent<TDto> SetHeaderStyle(Action<IExcelCellStyle> configuration)
+        {
+            HeaderStyleApplicator = new ExcelCellStyleApplicator<TDto>();
+            configuration.Invoke(HeaderStyleApplicator);
+            return this;
+        }
+
+
+
+        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.AutoFit()
+        {
+            return (IExcelSingleCellConfigurationMappingFluent<TDto>) AutoFit();
+        }
+
+        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.WordWrap()
+        {
+            return (IExcelSingleCellConfigurationMappingFluent<TDto>) WordWrap();
+        }
+
+        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.SetOrder(int columnOrder)
+        {
+            return (IExcelSingleCellConfigurationMappingFluent<TDto>)SetOrder(columnOrder);
+        }
+
+        IExcelSingleCellConfigurationMappingFluent<TDto> IExcelSingleCellConfigurationMappingFluent<TDto>.SetCaption(string caption)
+        {
+            return (IExcelSingleCellConfigurationMappingFluent<TDto>)SetCaption(caption);
+        }
+
+        IExcelCellConfigurationMappingFluent IExcelCellConfigurationMappingFluent.SetHeaderStyle(Action<IExcelCellStyle> configuration)
+        {
+            return SetHeaderStyle(configuration);
+        }
+
+
     }
 }
