@@ -120,7 +120,7 @@ namespace FluentEpplus.Tables.Processor
                 }
 
                 var newData = cell.GetValue(data);
-                if (newData is Enumerable)
+                if (newData is IEnumerable)
                 {
                     maxCurrentRow = ProcessRowFromEnumerable(worksheet, lastHeaderRow, cell, (IEnumerable)newData) - 1;
                 }

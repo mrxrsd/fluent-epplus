@@ -44,7 +44,7 @@ namespace FluentEpplus.Common.Extractor
         public object GetValue(object targetObject)
         {
             var dataObject = _baseExtractor.GetValue(targetObject);
-            return targetObject == null ? null : (_safeCompiledFunction != null) ? GetSafeValue(dataObject) : GetUnsafeValue(dataObject);
+            return targetObject == null ? null : (_safeCompiledFunction != null ? GetSafeValue(dataObject) : GetUnsafeValue(dataObject));
         }
 
 

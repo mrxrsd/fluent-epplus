@@ -69,10 +69,10 @@ namespace SampleProject
 
             var mapper = new ExcelMap();
 
-            //Sample1(mapper);
-            //Sample2(mapper);
-            //Sample3(mapper);
-            //Sample4(mapper);
+            Sample1(mapper);
+            Sample2(mapper);
+            Sample3(mapper);
+            Sample4(mapper);
             Sample5(mapper);
 
             var filename = $"extractFile{DateTime.Now.Ticks}.xlsx";
@@ -88,12 +88,13 @@ namespace SampleProject
             sheet.MapProperty(x => x.CreatedAt, time => time.ToString("yyyy-MM-dd")).SetCaption("Create At");
 
             sheet.MapTable(y => y.Foos, x =>
-            {
-                x.MapProperty(p => p.Id).SetCaption("Id").AutoFit();
-                x.MapProperty(p => p.Description).SetCaption("Description").AutoFit();
-                x.MapProperty(p => p.IsEnabled).SetCaption("Is Enabled").AutoFit();
+                {
+                    x.MapProperty(p => p.Id).SetCaption("Id").AutoFit();
+                    x.MapProperty(p => p.Description).SetCaption("Description").AutoFit();
+                    x.MapProperty(p => p.IsEnabled).SetCaption("Is Enabled").AutoFit();
 
-            });
+                }).ShowHeaderPerRow()
+                .SetCaption("Inner Table");
         }
 
         private static void Sample4(ExcelMap mapper)
