@@ -5,6 +5,14 @@
 - Form Rendering
 - Grouping columns header
 - Handle inner collections as new table inside a 'cell'
+- Few style options and capable of conditional styling
+
+## To-Do's
+- Tests
+- Validate bad mapping
+- Expose as extension of ExcelPackage
+- More style options
+- Create nuget package
 
 ## Examples
 
