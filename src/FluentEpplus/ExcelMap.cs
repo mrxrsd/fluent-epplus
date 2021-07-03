@@ -31,28 +31,6 @@ namespace FluentEpplus
             }
         }
 
-        public byte[] Extract()
-        {
-            return Process();
-        }
-
-        public void Extract(string path, string filename, bool openFile = false)
-        {
-            Validate();
-
-            byte[] result = Process();
-            var longFileName = Path.Combine(path, filename + ".xlsx");
-            BinaryWriter bw = new BinaryWriter(File.Open(longFileName, FileMode.CreateNew));
-            bw.Write(result);
-            bw.Flush();
-            bw.Close();
-
-            if (openFile)
-            {
-                System.Diagnostics.Process.Start(longFileName);
-            }
-        }
-
         public ExcelPackage GetExcelPackage()
         {
             ExcelPackage pack = null;

@@ -28,7 +28,7 @@ namespace FluentEpplus.Common.Extractor
             }
         }
 
-        protected Func<Y, SafeGetter<T>> CreateSafePath<Y, T>(Expression<Func<Y, T>> propertyExpression)
+        private Func<Y, SafeGetter<T>> CreateSafePath<Y, T>(Expression<Func<Y, T>> propertyExpression)
         {
             var transform = (Expression<Func<Y, SafeGetter<T>>>) new NullVisitor<T>().Visit(propertyExpression);
             return transform.Compile();
@@ -39,12 +39,12 @@ namespace FluentEpplus.Common.Extractor
             return (_compiledFunction != null) ? GetUnsafeValue(data) : GetSafeValue(data);
         }
 
-        protected virtual object GetUnsafeValue(object data)
+        private object GetUnsafeValue(object data)
         {
             return _compiledFunction.Invoke((TDto) data);
         }
 
-        protected virtual object GetSafeValue(object data)
+        private object GetSafeValue(object data)
         {
             return _safeCompiledFunction((TDto) data).Value;
         }

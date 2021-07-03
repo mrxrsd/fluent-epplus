@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Linq;
 
 namespace FluentEpplus.Common.Extractor
 {
@@ -24,25 +25,32 @@ namespace FluentEpplus.Common.Extractor
             }
         }
 
-        protected Func<Y, SafeGetter<T>> CreateSafePath<Y, T>(Expression<Func<Y, T>> propertyExpression)
+        private Func<Y, SafeGetter<T>> CreateSafePath<Y, T>(Expression<Func<Y, T>> propertyExpression)
         {
             var transform = (Expression<Func<Y, SafeGetter<T>>>)new NullVisitor<T>().Visit(propertyExpression);
+           
             return transform.Compile();
         }
-
-        public object GetValue(object data)
+        private object GetSafeValue(object data)
         {
-            return (_compiledFunction != null) ? GetUnsafeValue(data) : GetSafeValue(data);
+            return _safeCompiledFunction.Invoke((TValue) data);
         }
 
-        protected virtual object GetUnsafeValue(object data)
+        private object GetUnsafeValue(object data)
         {
             return _compiledFunction.Invoke((TValue)data);
         }
 
-        protected virtual object GetSafeValue(object data)
+        public object GetValue(object targetObject)
         {
-            return _safeCompiledFunction((TValue)data).Value;
+            var dataObject = _baseExtractor.GetValue(targetObject);
+            return targetObject == null ? null : (_safeCompiledFunction != null) ? GetSafeValue(dataObject) : GetUnsafeValue(dataObject);
         }
+
+
+
+
+
+
     }
 }

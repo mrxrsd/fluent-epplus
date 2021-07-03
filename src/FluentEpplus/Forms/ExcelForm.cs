@@ -14,13 +14,14 @@ namespace FluentEpplus.Forms
     {
     }
 
-    public interface IExcelForm<TDto> : IExcelTable, IExcelFormMappingFluent<TDto>,
-        IExcelFormConfigurationMappingFluent<TDto>
+    public interface IExcelForm<TDto> : IExcelTable, IExcelFormMappingFluent<TDto>, IExcelFormConfigurationMappingFluent<TDto>
     {
     }
 
     public class ExcelForm<TDto> : ExcelGroupCell<TDto>, IExcelForm<TDto>
     {
+        public bool IsShowHeaderPerRow { get; set; }
+
         public ExcelForm(IExcelContainerCells parent) : base(parent)
         {
         }
@@ -36,7 +37,7 @@ namespace FluentEpplus.Forms
             return this;
         }
 
-        public bool IsShowHeaderPerRow { get; set;  }
+        
     }
     
     

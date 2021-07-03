@@ -9,15 +9,14 @@ namespace FluentEpplus.Tables
 {
     public interface IExcelTableMappingFluent<TDto> : IExcelGroupCellMappingFluent<TDto>
     {
-        IExcelTableMappingFluent<TDto> MapTable(Action<IExcelTableMappingFluent<TDto>> relationship);
-        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
-        IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
+        IExcelTableConfigurationMappingFluent<TDto> MapTable(Action<IExcelTableMappingFluent<TDto>> relationship);
+        IExcelTableConfigurationMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
+        IExcelTableConfigurationMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship);
     }
 
     public interface IExcelTableConfigurationMappingFluent<TDto> : IExcelComplexGroupCellConfigurationMappingFluent {}
 
-    public interface IExcelTable<TDto> : IExcelTable, IExcelTableMappingFluent<TDto>,
-        IExcelTableConfigurationMappingFluent<TDto>
+    public interface IExcelTable<TDto> : IExcelTable, IExcelTableMappingFluent<TDto>, IExcelTableConfigurationMappingFluent<TDto>
     {
 
     }
@@ -43,7 +42,7 @@ namespace FluentEpplus.Tables
         }
 
 
-        public IExcelTableMappingFluent<TDto> MapTable(Action<IExcelTableMappingFluent<TDto>> relationship)
+        public IExcelTableConfigurationMappingFluent<TDto> MapTable(Action<IExcelTableMappingFluent<TDto>> relationship)
         {
             var newTable = new ExcelTable<TDto>(this);
             newTable.BuildDataExtractor(data=>data);
@@ -53,7 +52,7 @@ namespace FluentEpplus.Tables
             return newTable;
         }
 
-        public IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship)
+        public IExcelTableConfigurationMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, TNewDto>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship)
         {
             var newTable = new ExcelTable<TNewDto>(this);
             newTable.BuildDataExtractor(propertyExpression);
@@ -63,7 +62,7 @@ namespace FluentEpplus.Tables
             return newTable;
         }
 
-        public IExcelTableMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship)
+        public IExcelTableConfigurationMappingFluent<TNewDto> MapTable<TNewDto>(Expression<Func<TDto, List<TNewDto>>> propertyExpression, Action<IExcelTableMappingFluent<TNewDto>> relationship)
         {
             var newTable = new ExcelTable<TNewDto>(this);
             newTable.BuildDataExtractor(propertyExpression);

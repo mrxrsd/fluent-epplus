@@ -9,11 +9,10 @@ namespace FluentEpplus.Forms
 
     public interface IExcelRootFormConfigurationMappingFluent<TDto> : IExcelFormConfigurationMappingFluent<TDto>
     {
-
+        IExcelRootFormConfigurationMappingFluent<TDto> Bind(object fromData);
     }
 
-    public interface IExcelRootForm<TDto> : IExcelForm<TDto>, IExcelRootForm,
-        IExcelRootFormConfigurationMappingFluent<TDto>
+    public interface IExcelRootForm<TDto> : IExcelForm<TDto>, IExcelRootForm, IExcelRootFormConfigurationMappingFluent<TDto>
     {
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using FluentEpplus;
 
 namespace SampleProject
@@ -68,11 +69,61 @@ namespace SampleProject
 
             var mapper = new ExcelMap();
 
-            Sample1(mapper);
+            //Sample1(mapper);
             //Sample2(mapper);
+            //Sample3(mapper);
+            //Sample4(mapper);
+            Sample5(mapper);
 
-            var filename = "extractFile" + DateTime.Now.Ticks;
-            mapper.Extract(OUTPUT_PATH, filename, true);
+            var filename = $"extractFile{DateTime.Now.Ticks}.xlsx";
+            Extract(Path.Combine(OUTPUT_PATH,filename), mapper.GetExcelPackage().GetAsByteArray());
+        }
+
+        private static void Sample5(ExcelMap mapper)
+        {
+            var sheet = mapper.AddWorksheet().Label("Complex Foo Sheet").AddTable<FooBars>(t => t.Bind(FoosBars));
+
+            sheet.MapProperty(x => x.Id).SetCaption("Id").AutoFit();
+            sheet.MapProperty(x => x.Description).SetCaption("Description").AutoFit();
+            sheet.MapProperty(x => x.CreatedAt, time => time.ToString("yyyy-MM-dd")).SetCaption("Create At");
+
+            sheet.MapTable(y => y.Foos, x =>
+            {
+                x.MapProperty(p => p.Id).SetCaption("Id").AutoFit();
+                x.MapProperty(p => p.Description).SetCaption("Description").AutoFit();
+                x.MapProperty(p => p.IsEnabled).SetCaption("Is Enabled").AutoFit();
+
+            });
+        }
+
+        private static void Sample4(ExcelMap mapper)
+        {
+            var sheet = mapper.AddWorksheet().Label("Foo Form");
+
+            var form = sheet.AddForm<Foo>(f =>
+            {
+                f.Bind(Foos)
+                 .StartAtRow(2)
+                 .SetCaption("Application")
+                 .AutoFit()
+                 .SetOrder(3);
+            });
+
+            form.MapProperty(m => m.Id).SetCaption("Id").AutoFit();
+            form.MapProperty(m => m.Description).SetCaption("Description").AutoFit();
+        }
+
+        private static void Sample3(ExcelMap mapper)
+        {
+            var sheet = mapper.AddWorksheet().Label("FooBar Sheet").BlankAsNew();
+
+            var fooTable = sheet.AddTable<Foo>(t => t.Bind(Foos).StartAtRow(1));
+            fooTable.MapProperty(x => x.Id).SetCaption("Id");
+            fooTable.MapProperty(x => x.Description).SetCaption("Description");
+
+            var barTable = sheet.AddTable<Bar>(t => t.Bind(Bars).StartAtRow(5));
+            barTable.MapProperty(x => x.Id).SetCaption("Id");
+            barTable.MapProperty(x => x.Description).SetCaption("Description");
         }
 
         private static void Sample1(ExcelMap mapper)
@@ -106,6 +157,16 @@ namespace SampleProject
             mainTable.MapProperty(x => x.Description).SetCaption("Description").AutoFit();
 
             mainTable.MapProperty(x => x.CreatedAt, time => time.ToString("yyyy")).SetCaption("Year");
+        }
+
+
+        private static void Extract(string filename, byte[] stream)
+        {
+            BinaryWriter bw = new BinaryWriter(File.Open(filename, FileMode.CreateNew));
+            bw.Write(stream);
+            bw.Flush();
+            bw.Close();
+
         }
     }
 

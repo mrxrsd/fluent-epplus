@@ -42,8 +42,8 @@ namespace FluentEpplus.Tables.Processor
             {
                 worksheet.Cells[row, container.ColumnOrder, row, container.GetMaxOrder()].Value = container.Caption;
                 worksheet.Cells[row, container.ColumnOrder, row, container.GetMaxOrder()].Merge = true;
-                worksheet.Cells[row, container.ColumnOrder, row, container.ColumnOrder].Style.Font.Bold = true;
-                worksheet.Cells[row, container.ColumnOrder, row, container.ColumnOrder].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[row, container.ColumnOrder, row, container.GetMaxOrder()].Style.Font.Bold = true;
+                worksheet.Cells[row, container.ColumnOrder, row, container.GetMaxOrder()].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 container.ApplyHeaderStyle(worksheet.Cells[row, container.ColumnOrder, row, container.GetMaxOrder()]);
 
                 row++;
